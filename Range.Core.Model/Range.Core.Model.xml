@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Range.Core.Model</name>
+    </assembly>
+    <members>
+        <member name="T:Range.Core.Model.WeatherForecast">
+            <summary>
+            天气预报模型
+            </summary>
+        </member>
+        <member name="P:Range.Core.Model.WeatherForecast.Date">
+            <summary>
+            日期
+            </summary>
+        </member>
+        <member name="P:Range.Core.Model.WeatherForecast.TemperatureC">
+            <summary>
+            摄氏度
+            </summary>
+        </member>
+        <member name="P:Range.Core.Model.WeatherForecast.TemperatureF">
+            <summary>
+            F度
+            </summary>
+        </member>
+        <member name="P:Range.Core.Model.WeatherForecast.Summary">
+            <summary>
+            概括
+            </summary>
+        </member>
+    </members>
+</doc>
