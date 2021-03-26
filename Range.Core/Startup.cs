@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+ï»¿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.DotNet.PlatformAbstractions;
@@ -30,7 +30,7 @@ namespace Range.Core
     {
       var basePath = ApplicationEnvironment.ApplicationBasePath;
 
-      services.AddControllers();  //Ìí¼Ó¿ØÖÆÆ÷·şÎñ
+      services.AddControllers();  //ï¿½ï¿½Ó¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
       services.AddSwaggerGen(c =>
       {
         c.SwaggerDoc("v1", new OpenApiInfo
@@ -43,11 +43,11 @@ namespace Range.Core
         });
         c.OrderActionsBy(o => o.RelativePath);
 
-        //Ìí¼Ó¿ØÖÆÆ÷×¢ÊÍ
+        //æ·»åŠ æ§åˆ¶å™¨æ³¨é‡Š
         var xmlPath = Path.Combine(basePath, $"{ApiName}.xml");
         c.IncludeXmlComments(xmlPath, true);
 
-        //Ìí¼ÓÊµÌåÄ£ĞÍ×¢ÊÍ
+        //æ·»åŠ å®ä½“æ¨¡å‹æ³¨é‡Š
         var xmlModelPath = Path.Combine(basePath, $"{ApiName}.Model.xml");
         c.IncludeXmlComments(xmlModelPath, true);
       });
