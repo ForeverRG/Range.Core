@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Range.Core.Model;
 using System;
@@ -28,6 +29,10 @@ namespace Range.Core.Controllers
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    //[Authorize(Roles = "Admin")]  //角色授权
+    //[Authorize(Policy = "AdminOrUser")]  //满足Admin或者User
+    //[Authorize(Policy = "AdminAndUser")]  //同时满足Admin和User
+    [Authorize(Policy = "NeedClaimRangeOrChen")] //满足name Cliam
     public IEnumerable<WeatherForecast> Get()
     {
       var rng = new Random();

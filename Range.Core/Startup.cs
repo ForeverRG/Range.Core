@@ -4,15 +4,21 @@ using Microsoft.DotNet.PlatformAbstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.IO;
+using System.Security.Claims;
+using System.Text;
 
 namespace Range.Core
 {
   public class Startup
   {
     public string ApiName { get; set; } = "Range.Core";
+
+    public string Issure { get => "range.chen@quectel.com"; }
     public Startup(IConfiguration configuration)
     {
       Configuration = configuration;
@@ -26,6 +32,7 @@ namespace Range.Core
       var basePath = ApplicationEnvironment.ApplicationBasePath;
 
       services.AddControllers();  //添加控制器
+
       services.AddSwaggerGen(c =>
       {
         c.SwaggerDoc("v1", new OpenApiInfo
@@ -45,8 +52,50 @@ namespace Range.Core
         //添加实体模型注释
         var xmlModelPath = Path.Combine(basePath, $"{ApiName}.Model.xml");
         c.IncludeXmlComments(xmlModelPath, true);
+
+        c.OperationFilter<AddResponseHeadersFilter>();
+        c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
+        c.OperationFilter<SecurityRequirementsOperationFilter>();
+
+        #region Token绑定到ConfigureServices
+        c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+        {
+          Description = "JWT授权(数据将在请求头中进行传输) 直接在下框中输入Bearer {token}（注意两者之间是一个空格）\"",
+          Name = "Authorization",//jwt默认的参数名称
+          In = ParameterLocation.Header,//jwt默认存放Authorization信息的位置(请求头中)
+          Type = SecuritySchemeType.ApiKey
+        });
+        #endregion
       });
 
+      //添加jwt认证服务
+      services.AddAuthentication("Bearer").AddJwtBearer(c =>
+      {
+        c.TokenValidationParameters = new TokenValidationParameters()
+        {
+          ValidateIssuer = true,
+          ValidIssuer = Issure,
+
+          ValidateIssuerSigningKey = true,
+          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Issure)),
+
+          ValidateAudience = true,
+          ValidAudience = Issure,
+
+          ValidateLifetime = true,
+          RequireExpirationTime = true,
+        };
+      });
+
+      //基于策略授权
+      services.AddAuthorization(c =>
+      {
+        //c.AddPolicy("MustAdminRole", p => p.RequireRole("Admin"));
+        //c.AddPolicy("AdminAndUser", p => p.RequireRole("Admin", "User"));
+        //c.AddPolicy("AdminOrUser", p => p.RequireClaim(ClaimTypes.Role, "Admin", "User"));
+        //c.AddPolicy("NeedClaimRangeOrChen", p => p.RequireClaim(ClaimTypes.Name,"Range","Chen"));
+        //c.AddPolicy("RequirementTest",p=>p.Requirements.Add())
+      });
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,7 +114,8 @@ namespace Range.Core
 
       app.UseRouting();
 
-      app.UseAuthorization();
+      app.UseAuthentication();  //认证
+      app.UseAuthorization(); //授权
 
       app.UseEndpoints(endpoints =>
       {

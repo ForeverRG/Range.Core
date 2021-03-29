@@ -4,6 +4,12 @@
         <name>Range.Core</name>
     </assembly>
     <members>
+        <member name="M:Range.Core.Controllers.JWTController.GetJWTToken">
+            <summary>
+            获取jwtToken
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:Range.Core.Controllers.WeatherForecastController.Get">
             <summary>
             获取天气集合
