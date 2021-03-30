@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.DotNet.PlatformAbstractions;
 using Microsoft.Extensions.Configuration;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Range.Core.Policys;
 using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.IO;
@@ -94,8 +96,14 @@ namespace Range.Core
         //c.AddPolicy("AdminAndUser", p => p.RequireRole("Admin", "User"));
         //c.AddPolicy("AdminOrUser", p => p.RequireClaim(ClaimTypes.Role, "Admin", "User"));
         //c.AddPolicy("NeedClaimRangeOrChen", p => p.RequireClaim(ClaimTypes.Name,"Range","Chen"));
-        //c.AddPolicy("RequirementTest",p=>p.Requirements.Add())
+
+        //自定义授权处理器
+        //MyRequirementTest requirementItem = new MyRequirementTest() { Age = 9, Name = "range", Sex = "男" };
+        //c.AddPolicy("RequirementTest", p => p.Requirements.Add(requirementItem));
       });
+
+      services.AddSingleton<IAuthorizationHandler, MyRequirementHandler>(); //注入授权处理器
+      services.AddSingleton<MyRequirementTest>(); //注入授权注册类
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

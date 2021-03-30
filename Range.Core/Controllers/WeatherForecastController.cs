@@ -32,7 +32,8 @@ namespace Range.Core.Controllers
     //[Authorize(Roles = "Admin")]  //角色授权
     //[Authorize(Policy = "AdminOrUser")]  //满足Admin或者User
     //[Authorize(Policy = "AdminAndUser")]  //同时满足Admin和User
-    [Authorize(Policy = "NeedClaimRangeOrChen")] //满足name Cliam
+    //[Authorize(Policy = "NeedClaimRangeOrChen")] //满足name Cliam
+    //[Authorize(Policy = "RequirementTest")] //满足自定义的授权处理器
     public IEnumerable<WeatherForecast> Get()
     {
       var rng = new Random();
